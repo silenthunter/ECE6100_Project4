@@ -61,6 +61,8 @@ for(i = 0; i < 4; i = i + 1) begin
 		dataReturn = offsetData[7:0];
 		memDataOut = cacheLines[i];
 		hit = 1;
+
+		//TODO: Set the entry to LRU
 	end
 
 end //end for

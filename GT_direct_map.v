@@ -1,6 +1,7 @@
-module GT_direct_map(CLK, memData, nextAddr, dataReturn, hit, toMemData);
+module GT_direct_map(CLK, memData, memDataFromVictim, nextAddr, dataReturn, hit, toMemData);
 input CLK;
 input [255:0] memData;
+input [255:0] memDataFromVictim;
 input [31:0] nextAddr;
 output [7:0] dataReturn;
 reg [7:0] dataReturn;
@@ -24,7 +25,7 @@ reg [26:0] lineTag;
 
 integer i;
 
-GT_victim victim(.memData(toMemData));
+//GT_victim victim(.memData(toMemData));
 assign toMemData = localToMemData;
 
 initial begin
@@ -44,6 +45,12 @@ offset = nextAddr[4:0];
 if(memData) begin
 	localToMemData = cachelines[idx];//Send the old line to the victim cache
 	cachelines[idx] = memData;
+end
+
+//Cache-line received from the victim cache
+if(memDataFromVictim) begin
+	localToMemData = cachelines[idx];//Send the old line to the victim cache
+	cachelines[idx] = memDataFromVictim;
 end
 
 data = cachelines[idx];
