@@ -8,6 +8,13 @@ output hit;
 output miss;
 output [255:0] toMemData;
 
+reg miss;
+
 GT_direct_map map(.CLK(CLK), .memData(memData), .nextAddr(nextAddr), .dataReturn(dataReturn), .hit(hit), .toMemData(toMemData));
+
+always @ (posedge CLK) begin
+
+miss = ~ hit;
+end
 
 endmodule
