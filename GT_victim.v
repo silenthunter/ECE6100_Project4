@@ -46,7 +46,8 @@ offset = nextAddr[4:0];
 if(memDataIn) begin
 
 	//1 is right in this traversal
-	replacedIdx = PLRU[2] * 2 + ((PLRU[1:0]) >> PLRU[2]) & 1;
+	replacedIdx = PLRU[2] * 2 + (((PLRU[1:0]) >> PLRU[2]) & 1);
+	$display("Idx: %d", replacedIdx);
 	
 	PLRU[1:0] = PLRU [1:0] ^ 2 >> PLRU[2];//Switch lower part of the tree
 	PLRU[2] = PLRU[2] ^ 1;//Switch upper tree

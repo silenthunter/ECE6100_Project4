@@ -40,6 +40,8 @@ always @(posedge CLK) begin
 #1 tag = nextAddr[31:9];
 idx = nextAddr[8:5];
 offset = nextAddr[4:0];
+localToMemData = 256'hxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;
+dataReturn = 8'hxx;
 
 //Cache-line received from main memory
 if(memData) begin
@@ -48,26 +50,27 @@ if(memData) begin
 	tags[idx] = tag;
 	//$display("Data[%h] from memory: %h", idx, memData);
 end
+else
+	//Cache-line received from the victim cache
+	if(memDataFromVictim) begin
+		localToMemData = cachelines[idx];//Send the old line to the victim cache
+		cachelines[idx] = memDataFromVictim;
+		tags[idx] = tag;
+		//$display("Data[%h] from victim: %h", idx, memDataFromVictim);
+	end else begin
 
-//Cache-line received from the victim cache
-if(memDataFromVictim) begin
-	localToMemData = cachelines[idx];//Send the old line to the victim cache
-	cachelines[idx] = memDataFromVictim;
-	tags[idx] = tag;
-	//$display("Data[%h] from victim: %h", idx, memDataFromVictim);
-end
+	data = cachelines[idx];
+	cacheTag = tags[idx];
 
-data = cachelines[idx];
-cacheTag = tags[idx];
-
-if(cacheTag == tag) begin
-	dataShifted = (data << offset * 8);
-	dataReturn = dataShifted[255:248];
-	hit = 1;
-	//$display("[%h][%d]Direct hit // %h : %h >> %h shifted %d", nextAddr, idx, cacheTag, tag, dataReturn, offset);
-end else begin
-	hit = 0;
-	//$display("Miss");
+	if(cacheTag == tag) begin
+		dataShifted = (data << offset * 8);
+		dataReturn = dataShifted[255:248];
+		hit = 1;
+		//$display("[%h][%d]Direct hit // %h : %h >> %h shifted %d", nextAddr, idx, cacheTag, tag, dataReturn, offset);
+	end else begin
+		hit = 0;
+		//$display("Miss");
+	end
 end
 
 end

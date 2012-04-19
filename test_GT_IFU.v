@@ -26,6 +26,7 @@ GT_IFU IFU (.inst_addr(addr_for_icache), .GCLK(GCLK), .CLEAR_BAR(CLEAR_BAR), .CT
 
 initial 
 begin
+$monitor("%h", addr_for_icache);
 #1 CLEAR_BAR = 0;
    CTR_EN  = 1;   
    CLK = 0;
@@ -34,7 +35,7 @@ begin
 #100 CLEAR_BAR = 1;
 #500 SIG_gate = 0;
 #1000 SIG_gate = 1;
-//#1000 $stop;
+#10000 $stop;
 end
 
 always
