@@ -18,7 +18,7 @@ reg hit;
 reg [31:0] lineAddr;
 reg [255:0] memDataOut;
 
-reg [31:0] offsetData;
+reg [255:0] offsetData;
 
 reg [2:0] PLRU;
 
@@ -38,6 +38,8 @@ end
 
 always @ (posedge CLK) begin
 #1 tag = nextAddr[31:5];
+dataReturn = 8'hxx;
+toMemData = 255'hxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;
 offset = nextAddr[4:0];
 
 //Replace LRU entry with memData
@@ -50,22 +52,25 @@ if(memDataIn) begin
 	PLRU[2] = PLRU[2] ^ 1;//Switch upper tree
 
 	toMemData = cacheLines[replacedIdx];
-	$display("Tree %b", PLRU);
+	cacheLines[replacedIdx] = memDataIn;
+	tagLines[replacedIdx] = tag;
+	//$display("Tree %b", PLRU);
 end
+else begin
+	//Find the tag in the associative cache, if it exists
+	hit = 0;
+	for(i = 0; i < 4; i = i + 1) begin
+		if(tag == tagLines[i]) begin
+			offsetData = cacheLines[i] << (offset * 8);
+			dataReturn = offsetData[255:248];
+			memDataOut = cacheLines[i];
+			hit = 1;
 
-//Find the tag in the associative cache, if it exists
-hit = 0;
-for(i = 0; i < 4; i = i + 1) begin
-	if(tag == tagLines[i]) begin
-		offsetData = cacheLines[i] << offset * 8;
-		dataReturn = offsetData[7:0];
-		memDataOut = cacheLines[i];
-		hit = 1;
+			//TODO: Set the entry to LRU
+		end
 
-		//TODO: Set the entry to LRU
-	end
-
-end //end for
+	end //end for
+end
 
 end
 

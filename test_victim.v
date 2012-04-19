@@ -21,19 +21,35 @@ memData = 0;
 nextAddr = 0;
 memAddr = 0;
 
-#500 $stop;
+$monitor("%d\t%h\t%b\t%h\t%h", $time, nextAddr, hit, dataReturn, toMemData);
+$display("Beginning write to victim cache");
+
+#2
+memData =  256'hFFFF_EEEE_DDDD_CCCC_BBBB_AAAA_9999_8888_7777_6666_5555_4444_3333_2222_1111_0000;
+nextAddr = 32'h01000001;
+#2
+nextAddr = 32'h02000002;
+#2
+nextAddr = 32'h03000003;
+#2
+nextAddr = 32'h04000004;
+#2
+nextAddr = 32'h05000005;
+#2
+memData =  0;
+$display("Beginning read");
+#4
+nextAddr = 32'h03000003;
+#2
+nextAddr = 32'h07000007;
+#60 $stop;
 end
 
 always begin
-#10 CLK = ~CLK;
+#1 CLK = ~CLK;
 end
 
 always @ (posedge CLK)  begin
-if(!hit) memAddr = nextAddr;
-$display("dataReturn: %h\ntoMemData: %h\nhit: %b", dataReturn, toMemData, hit);
-$display("Dout: %h", Dout);
-$display("MemData: %h\n", memDataOut);
-//nextAddr = nextAddr + (1 << 5);
 
 end
 

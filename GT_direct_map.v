@@ -16,8 +16,8 @@ reg [4:0] offset;
 reg [255:0] cachelines [31:0];
 reg [31:0] tags [21:0];
 
-reg [31:0] data;
-reg [31:0] dataShifted;
+reg [255:0] data;
+reg [255:0] dataShifted;
 reg [21:0] cacheTag;
 
 reg [26:0] lineTag;
@@ -46,7 +46,7 @@ if(memData) begin
 	localToMemData = cachelines[idx];//Send the old line to the victim cache
 	cachelines[idx] = memData;
 	tags[idx] = tag;
-	$display("Data[%h] from memory: %h", idx, memData);
+	//$display("Data[%h] from memory: %h", idx, memData);
 end
 
 //Cache-line received from the victim cache
@@ -61,10 +61,10 @@ data = cachelines[idx];
 cacheTag = tags[idx];
 
 if(cacheTag == tag) begin
-	dataShifted = (data >> offset * 8);
-	dataReturn = dataShifted[7:0];
+	dataShifted = (data << offset * 8);
+	dataReturn = dataShifted[255:248];
 	hit = 1;
-	$display("[%h][%d]Direct hit // %h : %h >> %h", nextAddr, idx, cacheTag, tag, dataReturn);
+	//$display("[%h][%d]Direct hit // %h : %h >> %h shifted %d", nextAddr, idx, cacheTag, tag, dataReturn, offset);
 end else begin
 	hit = 0;
 	//$display("Miss");
