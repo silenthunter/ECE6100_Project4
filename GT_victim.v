@@ -37,7 +37,7 @@ PLRU = 0;
 end
 
 always @ (posedge CLK) begin
-tag = nextAddr[31:5];
+#1 tag = nextAddr[31:5];
 offset = nextAddr[4:0];
 
 //Replace LRU entry with memData

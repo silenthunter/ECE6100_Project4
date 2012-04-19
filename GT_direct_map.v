@@ -21,11 +21,11 @@ reg [31:0] dataShifted;
 reg [21:0] cacheTag;
 
 reg [26:0] lineTag;
+reg hit;
 //reg [255:0] toMemData;
 
 integer i;
 
-//GT_victim victim(.memData(toMemData));
 assign toMemData = localToMemData;
 
 initial begin
@@ -37,7 +37,7 @@ end
 end
 
 always @(posedge CLK) begin
-tag = nextAddr[31:9];
+#1 tag = nextAddr[31:9];
 idx = nextAddr[8:5];
 offset = nextAddr[4:0];
 
@@ -45,12 +45,16 @@ offset = nextAddr[4:0];
 if(memData) begin
 	localToMemData = cachelines[idx];//Send the old line to the victim cache
 	cachelines[idx] = memData;
+	tags[idx] = tag;
+	$display("Data[%h] from memory: %h", idx, memData);
 end
 
 //Cache-line received from the victim cache
 if(memDataFromVictim) begin
 	localToMemData = cachelines[idx];//Send the old line to the victim cache
 	cachelines[idx] = memDataFromVictim;
+	tags[idx] = tag;
+	//$display("Data[%h] from victim: %h", idx, memDataFromVictim);
 end
 
 data = cachelines[idx];
@@ -59,8 +63,11 @@ cacheTag = tags[idx];
 if(cacheTag == tag) begin
 	dataShifted = (data >> offset * 8);
 	dataReturn = dataShifted[7:0];
+	hit = 1;
+	$display("[%h][%d]Direct hit // %h : %h >> %h", nextAddr, idx, cacheTag, tag, dataReturn);
 end else begin
-	$display("Miss");
+	hit = 0;
+	//$display("Miss");
 end
 
 end
