@@ -47,7 +47,6 @@ if(memDataIn) begin
 
 	//1 is right in this traversal
 	replacedIdx = PLRU[2] * 2 + (((PLRU[1:0]) >> PLRU[2]) & 1);
-	$display("Idx: %d", replacedIdx);
 	
 	PLRU[1:0] = PLRU [1:0] ^ 2 >> PLRU[2];//Switch lower part of the tree
 	PLRU[2] = PLRU[2] ^ 1;//Switch upper tree
@@ -67,7 +66,9 @@ else begin
 			memDataOut = cacheLines[i];
 			hit = 1;
 
-			//TODO: Set the entry to LRU
+			//Set the entry to LRU. It will be swapped with the direct cache
+			PLRU[2] = i / 2;
+			PLRU[i / 2 + 1] = ~(i % 2);
 		end
 
 	end //end for

@@ -37,6 +37,8 @@ begin
    addr_stream_mem[8] = 32'h0000_0847;
    addr_stream_mem[9] = 32'h0000_0442;
    addr_stream_mem[10]= 32'h0000_0847; 
+   addr_stream_mem[11]= 32'h0000_0847; 
+   addr_stream_mem[12]= 32'h0000_0847; 
    inst_addr = addr_stream_mem[0];  
 end
     

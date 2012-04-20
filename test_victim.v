@@ -22,6 +22,7 @@ nextAddr = 0;
 memAddr = 0;
 
 $monitor("%d\t%h\t%b\t%h\t%h", $time, nextAddr, hit, dataReturn, toMemData);
+$display("Tick\tAddr\thit\tdata\tToMem");
 $display("Beginning write to victim cache");
 
 #2
@@ -34,6 +35,7 @@ nextAddr = 32'h03000003;
 #2
 nextAddr = 32'h04000004;
 #2
+$display("Push out another cacheline to main mem");
 nextAddr = 32'h05000005;
 #2
 memData =  0;

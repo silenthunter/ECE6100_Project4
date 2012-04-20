@@ -15,6 +15,7 @@ $display("Beginning direct test");
 CLK = 0;
 nextAddr = 32'h00100001;
 
+$display("Addr\thit\tdata\ttoVictimCache");
 $monitor("%h\t%h\t%h\t%h", nextAddr, hit, dataReturn, toMemData);
 
 memData = 256'hFFFF_EEEE_DDDD_CCCC_BBBB_AAAA_9999_8888_7777_6666_5555_4444_3333_2222_1111_0000;
@@ -22,6 +23,7 @@ memData = 256'hFFFF_EEEE_DDDD_CCCC_BBBB_AAAA_9999_8888_7777_6666_5555_4444_3333_
 $display("Writing Data");
 #2 nextAddr = 32'h00200002;
 #2 nextAddr = 32'h00300003;
+$display("Overwrite");
 #2 nextAddr = 32'h023000F3;
 #2
 $display("Reading Data");
